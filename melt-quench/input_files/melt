@@ -1,0 +1,16 @@
+atoms_file = 'atoms0.xyz'
+pot_file = 'gap_files/carbon.gap'
+
+n_species = 1
+species = C
+
+md_step = 1.
+md_nsteps = 1000
+
+t_beg = 9000.
+t_end = 9000.
+tau_t = 10.
+thermostat = bussi # careful, Bussi does not work with zero T
+
+write_xyz = 10
+write_thermo = 1
