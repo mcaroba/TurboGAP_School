@@ -12,8 +12,8 @@ t_end = 300.
 tau_t = 100.
 thermostat = bussi # careful, Bussi does not work with zero T
 
-p_beg = 1.e4
-p_end = 1.e4
+p_beg = 1.e5
+p_end = 1.e5
 tau_p = 1000.
 gamma_p = 10.
 barostat = berendsen
