@@ -32,79 +32,94 @@ Much of the relevant keywords for TurboGAP to predict powder diffraction-derived
 
 Before looking at it, let's understand the experimental and computational context. 
 
-A diffraction pattern is a representation/averaged over reciprocal space. For XRD, X-rays undergo diffraction in the material due to the electron density: different atoms have different electronic densities, and result in differing intensities. Bragg's law, $n \lambda = 2 d \sin\theta$ the famous rule for constructive interference, shows that the interplanar spacing (which can be defined by the change in scattering vector $\mathbf{q} = \mathbf{K}-\mathbf{K}_0 \,\, q =  4\pi \sin \theta / \lambda$). Hence the proportion of different planes which make up a material (this is the dual of the atomic, real-space representation of a system), can be understood and the crystal structure can be deduced. 
+A diffraction pattern is a an (averaged) representation of a material's reciprocal space. This is why it is useful to identify crystal structures. For XRD, X-rays undergo diffraction in the material due to the electron density: different atoms have different electronic densities, and result in differing intensities. For neutron scattering, it is due to the atomic nuclei. Bragg's law, $n \lambda = 2 d \sin\theta$ the famous rule for constructive interference, shows that the interplanar spacing (which can be defined by the change in scattering vector $\mathbf{q} = \mathbf{K}-\mathbf{K}_0 ,\,\, q =  4\pi \sin \theta / \lambda$). Hence the proportion of different planes which make up a material (this is the dual of the atomic, real-space representation of a system), can be understood and the crystal structure can be deduced. Crystalline structures exhibit sharp and well-defined peaks, whereas amorphous systems have diffuse peaks. 
 
+The experimental setup is as so:
 ![hemisphere of diffraction (Wikipedia, XRD)](images/Hemisphere_of_Diffraction.png)
-
 From the above image, we can see that a powder xrd pattern (so called powder as powders are averaged over all orientations). Averaging the measured intensity over the azimuthal coordinate gives us a 1-d graph of intensity, vs $\mathbf{q}$. This is what experimentalists generally obtain. 
 
-The Fourier transform of the 1-d XRD/ND powder pattern is the pair distribution function (modified by ). 
+The Fourier transform of the 1-d XRD/ND powder pattern is the pair distribution function (modified by scattering factors). Hence, for the calculation of XRD, we can go from the _pair distribution function_ to the XRD/ND pattern. This means scales as $\mathcal{O}(N)$ compared to the traditional Debye equation ($\mathcal{O}(N^2)$).
 
-
-  Can go from _pair distribution function_ to the XRD/ND. Scales as $\mathcal{O}(N)$ compared to the traditional Debye equation.
 $$  g_{ab}(r) =  \frac{n_{ab}(r)}{4\pi r^2\,d r N_a \rho_b } $$
 
-  We need dependence on atomic position!
+From the above histogram form of the pair distribution function, we cannot
+account for thermal/instrumental broadening of the observable. We can rectify
+this by doing a kernel density estimate cannot account for thermal/instrumental
+broadening of the observable (the $\sigma$ can be directly related to Debye-Waller factors). 
+
 $$\begin{aligned}
     {\hat{g}_{ab}}(r; \{\mathbf{r}\}) = &\frac{1}{ \sqrt{2\pi}} \frac{V}{4\pi r^2 N_a N_b } \nonumber\\ &\sum_i \sum_{j\neq i} \frac{1}{\sigma_{{ij}}}\exp\left( - \frac{ (r - r_{ij})^2}{2\sigma^2_{ij}}  \right) \delta_{s(i),a}\delta_{s(j),b},
   \end{aligned} $$
 
-Partial structure factors are: 
+We can transform this to the XRD pattern through structure factors. Here, we use the Ashcroft-Langreth formalism
+$$ \begin{aligned}
+S_{ab}(Q)  = &\delta_{ab} + 4\pi \rho (c_{a} c_{b})^{1/2} \\
+&\int_0^{r_{\rm cut}} \, \text{d}r \, r^2 \frac{\sin( Q \, r )}{Q \, r} \frac{\sin( \pi \, r / r_{\rm cut} )}{\pi \, r / r_{\rm cut}} [ g_{ab}(r) - 1 ],
+\end{aligned} $$
+where we have introduced a "window" function $w(r) = \sin( \pi r / r_{\rm cut} )/(\pi r / r_{\rm cut})$,
+which suppresses oscillations in the partial structure factors arising from the introduction of the cutoff $r_{\rm cut}$.
 
-$$  \begin{aligned}
-    \frac{\partial}{\partial r_{k}^{\alpha}} {\hat{S}_{ab}}(Q; \{\mathbf{r}\}) &=  4\pi \rho (c_{a} c_{b})^{1/2} \nonumber\\ &\int^{r_{\rm cut}}_0 \,d r   \left( r^2\frac{\sin( Q r )}{Qr} \frac{\sin( \pi r / r_{\rm cut} )}{\pi r / r_{\rm cut}}  \frac{\partial {\hat{g}_{ab}}(r; \{\mathbf{r}\})}{\partial r^{\alpha}_k}  \right).
-  \end{aligned} $$
+From the partial structure factors, we can obtain the full \gls{XRD} intensity
+by a summation over system species types:
+$$ \begin{aligned}
+I^{\rm X}(Q) = &\sum_{a,b}^{n_{\rm s}} f_{a}(Q) f_{b}(Q) (c_{a}c_{b})^{1/2}  \left[ S_{a b}(Q) - \delta_{a b}\right] \nonumber\\ &+ \sum_{a}^{n_{\rm s}} c_{a}f_{a}(Q)^2.
+\end{aligned} $$
 
-  Modify these by the scattering factors to get the XRD/ND gradients.
-  \begin{equation}
-    \frac{\partial I^{\rm X}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k} = \sum_{a b}^{n_{\rm s}} f_{a}(Q) f_{b}(Q) (c_{a}c_{b})^{1/2}  \frac{\partial \textcolor{ForestGreen}{\hat{S}_{a b}}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k},
-  \end{equation}
+Hence, there are a number of parameters which are needed for the calculation! 
 
-  Finally obtain the forces to match experiment.
-  \begin{equation}
-    \tilde{f}_k^{\alpha} = - \frac{\partial
-      V^{\rm X}}{\partial r^{\alpha}_k}  =  - \gamma \mathbf{w}\odot\frac{\partial
-      \mathbf{I}^{\rm X}_{\rm pred}}{\partial r^{\alpha}_k} \cdot \left( \mathbf{w}\odot \left(
-        \mathbf{I}^{\rm X}_{\rm {pred}} - \mathbf{I}^{\rm X}_{\rm {exp}} \right) \right).
-  \end{equation}
+<!-- Partial structure factors are:  -->
+
+<!-- $$  \begin{aligned} -->
+<!--     \frac{\partial}{\partial r_{k}^{\alpha}} {\hat{S}_{ab}}(Q; \{\mathbf{r}\}) &=  4\pi \rho (c_{a} c_{b})^{1/2} \nonumber\\ &\int^{r_{\rm cut}}_0 \,d r   \left( r^2\frac{\sin( Q r )}{Qr} \frac{\sin( \pi r / r_{\rm cut} )}{\pi r / r_{\rm cut}}  \frac{\partial {\hat{g}_{ab}}(r; \{\mathbf{r}\})}{\partial r^{\alpha}_k}  \right). -->
+<!--   \end{aligned} $$ -->
+
+<!--   Modify these by the scattering factors to get the XRD/ND gradients. -->
+<!--   \begin{equation} -->
+<!--     \frac{\partial I^{\rm X}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k} = \sum_{a b}^{n_{\rm s}} f_{a}(Q) f_{b}(Q) (c_{a}c_{b})^{1/2}  \frac{\partial \textcolor{ForestGreen}{\hat{S}_{a b}}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k}, -->
+<!--   \end{equation} -->
+
+<!--   Finally obtain the forces to match experiment. -->
+<!--   \begin{equation} -->
+<!--     \tilde{f}_k^{\alpha} = - \frac{\partial -->
+<!--       V^{\rm X}}{\partial r^{\alpha}_k}  =  - \gamma \mathbf{w}\odot\frac{\partial -->
+<!--       \mathbf{I}^{\rm X}_{\rm pred}}{\partial r^{\alpha}_k} \cdot \left( \mathbf{w}\odot \left( -->
+<!--         \mathbf{I}^{\rm X}_{\rm {pred}} - \mathbf{I}^{\rm X}_{\rm {exp}} \right) \right). -->
+<!--   \end{equation} -->
 
 
 ```config
 do_xrd                      = .true.     # Do X-Ray diffraction prediction 
-q_range_min                 =   0.1      # -> Range for the XRD/structure factor calculation: q = 4 pi sin( theta ) / lambda, where theta is the half angle of diffraction
-q_range_max                 =  10.0      # -> Range - " - 
+q_range_min                 =   0.1      # -> Range for the XRD/structure factor calculation:
+                                         #    q = 4 pi sin( theta ) / lambda, where theta is 
+                                         #    the half angle of diffraction
+q_range_max                 =  10.0      # -> - " - 
 write_xrd                   = .true.     # -> Write out xrd pattern
-xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier transform of G(r), the reduced PDF (this can be 'F(q)'/'i(q)' or the full xrd intensity 'xrd')
+xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier 
+                                         #    transform of G(r), the reduced PDF (this can be 
+                                         #    'F(q)'/'i(q)' or the full xrd intensity 'xrd')
 
-do_pair_distribution        = .true.     # Calculate the XRD from the pair distribution function, so it scales linearly with the number of atoms
-pair_distribution_kde_sigma =   0.1      # -> Use Gaussian Kernel Density Estimate of width 0.1A to smooth out, accounting for thermal broadening
+do_pair_distribution        = .true.     # Calculate the XRD from the pair distribution 
+                                         # function, so it scales linearly with the number of atoms
+pair_distribution_kde_sigma =   0.1      # -> Use Gaussian Kernel Density Estimate of 
+                                         #    width 0.1A to smooth out, accounting for thermal broadening
 pair_distribution_partial   = .true.     # -> Calculate partial pair-distribution functions
 pair_distribution_rcut      =  10.6      # -> Cutoff partial pair distribution 
 r_range_min                 =   0.1      # -> Range for the PDF calculation   
 r_range_max                 =  10.0      # -> Range - " - 
 write_pair_distribution     = .true.     # -> Write out pair distribution functions 
 
-do_structure_factor         = .true.     # Use (raw, non-scattering factor corrected) (partial) structure factor(s) for calculations 
-structure_factor_from_pdf   = .true.     # -> Fourier transform the pair distribution functions to obtain the uncorrected structure factors, which when corrected give the XRD pattern. 
-structure_factor_window     = .true.    # -> Use a multiplicative "windowing" function (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier transform of pdf to minimize high frequency artifacts resulting from the finite range fourier transform.
+do_structure_factor         = .true.     # Use (raw, non-scattering factor corrected) 
+                                         # (partial) structure factor(s) for calculations 
+structure_factor_from_pdf   = .true.     # -> Fourier transform the pair distribution functions 
+                                         #    to obtain the uncorrected structure factors, which
+                                         #    when corrected give the XRD pattern. 
+structure_factor_window     = .true.     # -> Use a multiplicative "windowing" function 
+                                         #    (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier transform
+                                         #    of pdf to minimize high frequency artifacts resulting
+                                         #    from the finite range fourier transform.
 write_structure_factor      = .true.     # -> Write out structure factors
 ```
 
-This looks like a lot! Why so? 
-
-Well in general diffraction patterns 
-
-One must be aware of the possible pitfalls when using what's called a "forward"
-model for prediction: _i.e., going from an atomic structure to an observable_.
-Observations gathered from an experiment are usually assumed to be at
-thermodynamic equilibrium, which means that the typical ensemble statistics
-hold: _i.e. using configurations sampled from the thermodynamic partition
-function of choice, we can obtain a reasonable estimate of an observable._Much
-of the time in our simulations, we wish to assume that our simulation cell is
-close enough to the real system, which allows one to forgo the need for multiple
-configurations from an ensemble. Care must be taken when considering systems
-undergoing transitions as typically the number of configurations needed can
-drastically change, especially if the transition is disordered. 
 
 
 As can be seen in the `input_files/xrd_options`
@@ -200,3 +215,19 @@ $$
       \mathbf{I}^{\rm X}_{\rm pred}}{\partial r^{\alpha}_k} \cdot \left( \mathbf{w}\odot \left(
         \mathbf{I}^{\rm X}_{\rm {pred}} - \mathbf{I}^{\rm X}_{\rm {exp}} \right) \right).
 $$
+
+
+## General considerations when using experimental estimations
+
+One must be aware of the possible pitfalls when using what's called a "forward"
+model for prediction: _i.e., going from an atomic structure to an observable_.
+Observations gathered from an experiment are usually assumed to be at
+thermodynamic equilibrium, which means that the typical ensemble statistics
+hold: _i.e. using configurations sampled from the thermodynamic partition
+function of choice, we can obtain a reasonable estimate of an observable._Much
+of the time in our simulations, we wish to assume that our simulation cell is
+close enough to the real system, which allows one to forgo the need for multiple
+configurations from an ensemble. Care must be taken when considering systems
+undergoing transitions as typically the number of configurations needed can
+drastically change, especially if the transition is disordered. 
+
