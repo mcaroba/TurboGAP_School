@@ -21,13 +21,93 @@ atoms for:
 And we further have aims to extend this to more observables: Raman, IR,
 NMR, XAS and TEM just to name a few!
 
-In this tutorial, we will try to be detectives: given some experimental
-data, and knowledge of the species proportions, can we find out what is
-the most likey structure that makes sense?
+In this tutorial, we will try to be an experimentalist (detective): given some experimental
+data, and knowledge of the species proportions, can we find out what structure we have analysed?
 
 First, lets see how we can make an experimental observable prediction.
 
 # Prediction
+
+Much of the relevant keywords for TurboGAP to predict powder diffraction-derived quantities (observables 1-3 above) can be found in `input_files/xrd_options`. 
+
+Before looking at it, let's understand the experimental and computational context. 
+
+A diffraction pattern is a representation/averaged over reciprocal space. For XRD, X-rays undergo diffraction in the material due to the electron density: different atoms have different electronic densities, and result in differing intensities. Bragg's law, $n \lambda = 2 d \sin\theta$ the famous rule for constructive interference, shows that the interplanar spacing (which can be defined by the change in scattering vector $\mathbf{q} = \mathbf{K}-\mathbf{K}_0 \,\, q =  4\pi \sin \theta / \lambda$). Hence the proportion of different planes which make up a material (this is the dual of the atomic, real-space representation of a system), can be understood and the crystal structure can be deduced. 
+
+![hemisphere of diffraction (Wikipedia, XRD)](images/Hemisphere_of_Diffraction.png)
+
+From the above image, we can see that a powder xrd pattern (so called powder as powders are averaged over all orientations). Averaging the measured intensity over the azimuthal coordinate gives us a 1-d graph of intensity, vs $\mathbf{q}$. This is what experimentalists generally obtain. 
+
+The Fourier transform of the 1-d XRD/ND powder pattern is the pair distribution function (modified by ). 
+
+
+  Can go from _pair distribution function_ to the XRD/ND. Scales as $\mathcal{O}(N)$ compared to the traditional Debye equation.
+$$  g_{ab}(r) =  \frac{n_{ab}(r)}{4\pi r^2\,d r N_a \rho_b } $$
+
+  We need dependence on atomic position!
+$$\begin{aligned}
+    {\hat{g}_{ab}}(r; \{\mathbf{r}\}) = &\frac{1}{ \sqrt{2\pi}} \frac{V}{4\pi r^2 N_a N_b } \nonumber\\ &\sum_i \sum_{j\neq i} \frac{1}{\sigma_{{ij}}}\exp\left( - \frac{ (r - r_{ij})^2}{2\sigma^2_{ij}}  \right) \delta_{s(i),a}\delta_{s(j),b},
+  \end{aligned} $$
+
+Partial structure factors are: 
+
+$$  \begin{aligned}
+    \frac{\partial}{\partial r_{k}^{\alpha}} {\hat{S}_{ab}}(Q; \{\mathbf{r}\}) &=  4\pi \rho (c_{a} c_{b})^{1/2} \nonumber\\ &\int^{r_{\rm cut}}_0 \,d r   \left( r^2\frac{\sin( Q r )}{Qr} \frac{\sin( \pi r / r_{\rm cut} )}{\pi r / r_{\rm cut}}  \frac{\partial {\hat{g}_{ab}}(r; \{\mathbf{r}\})}{\partial r^{\alpha}_k}  \right).
+  \end{aligned} $$
+
+  Modify these by the scattering factors to get the XRD/ND gradients.
+  \begin{equation}
+    \frac{\partial I^{\rm X}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k} = \sum_{a b}^{n_{\rm s}} f_{a}(Q) f_{b}(Q) (c_{a}c_{b})^{1/2}  \frac{\partial \textcolor{ForestGreen}{\hat{S}_{a b}}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k},
+  \end{equation}
+
+  Finally obtain the forces to match experiment.
+  \begin{equation}
+    \tilde{f}_k^{\alpha} = - \frac{\partial
+      V^{\rm X}}{\partial r^{\alpha}_k}  =  - \gamma \mathbf{w}\odot\frac{\partial
+      \mathbf{I}^{\rm X}_{\rm pred}}{\partial r^{\alpha}_k} \cdot \left( \mathbf{w}\odot \left(
+        \mathbf{I}^{\rm X}_{\rm {pred}} - \mathbf{I}^{\rm X}_{\rm {exp}} \right) \right).
+  \end{equation}
+
+
+```config
+do_xrd                      = .true.     # Do X-Ray diffraction prediction 
+q_range_min                 =   0.1      # -> Range for the XRD/structure factor calculation: q = 4 pi sin( theta ) / lambda, where theta is the half angle of diffraction
+q_range_max                 =  10.0      # -> Range - " - 
+write_xrd                   = .true.     # -> Write out xrd pattern
+xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier transform of G(r), the reduced PDF (this can be 'F(q)'/'i(q)' or the full xrd intensity 'xrd')
+
+do_pair_distribution        = .true.     # Calculate the XRD from the pair distribution function, so it scales linearly with the number of atoms
+pair_distribution_kde_sigma =   0.1      # -> Use Gaussian Kernel Density Estimate of width 0.1A to smooth out, accounting for thermal broadening
+pair_distribution_partial   = .true.     # -> Calculate partial pair-distribution functions
+pair_distribution_rcut      =  10.6      # -> Cutoff partial pair distribution 
+r_range_min                 =   0.1      # -> Range for the PDF calculation   
+r_range_max                 =  10.0      # -> Range - " - 
+write_pair_distribution     = .true.     # -> Write out pair distribution functions 
+
+do_structure_factor         = .true.     # Use (raw, non-scattering factor corrected) (partial) structure factor(s) for calculations 
+structure_factor_from_pdf   = .true.     # -> Fourier transform the pair distribution functions to obtain the uncorrected structure factors, which when corrected give the XRD pattern. 
+structure_factor_window     = .true.    # -> Use a multiplicative "windowing" function (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier transform of pdf to minimize high frequency artifacts resulting from the finite range fourier transform.
+write_structure_factor      = .true.     # -> Write out structure factors
+```
+
+This looks like a lot! Why so? 
+
+Well in general diffraction patterns 
+
+One must be aware of the possible pitfalls when using what's called a "forward"
+model for prediction: _i.e., going from an atomic structure to an observable_.
+Observations gathered from an experiment are usually assumed to be at
+thermodynamic equilibrium, which means that the typical ensemble statistics
+hold: _i.e. using configurations sampled from the thermodynamic partition
+function of choice, we can obtain a reasonable estimate of an observable._Much
+of the time in our simulations, we wish to assume that our simulation cell is
+close enough to the real system, which allows one to forgo the need for multiple
+configurations from an ensemble. Care must be taken when considering systems
+undergoing transitions as typically the number of configurations needed can
+drastically change, especially if the transition is disordered. 
+
+
+As can be seen in the `input_files/xrd_options`
 
 # Structural Inference
 
@@ -59,7 +139,7 @@ structures which agree with experimental XPS data by design.
 
 We simply add this to the input file
 
-``` conf
+``` config
 # Experimental Data Specification
 n_exp = 1                                     # Number of experimental observables we wish to recreate
 exp_labels = 'xps'                            # Labels of experimental observables (currently limited to xps/xrd/nd/pdf)
@@ -77,7 +157,7 @@ To turn this off, we can set \`exp~energies~ = .false.\`
 We can also do reverse monte-carlo using multiple types of experimental
 data, such as with this arbitrary example.
 
-``` conf
+``` config
 # Experimental Data Specification
 n_exp = 2                                     # Number of experimental observables we wish to recreate
 exp_labels = 'xps' 'xrd'                            # Labels of experimental observables (currently limited to xps/xrd/nd/pdf)
@@ -88,7 +168,35 @@ exp_energy_scales = 10.0 100.0                     # The energy scale "gamma" as
 
 ## Molecular Augmented Dynamics
 
-Reverse Monte-Carlo, despite it being
 
-Molecular Augmented Dynamics is an MD-driven means to infer the
-structure.
+Reverse Monte-Carlo is very useful for being able to sample complex observables, where derivatives with respect to the atomic position are lacking, however, it is prone to being stuck in minima. In general the acceptance criterion for a monte-carlo move is $\alpha \propto \exp (-\Delta E)$. Hence, when there are stable motifs found in the structure, it is very hard for the whole system to move out of them, with many trial configurations being rejected, which reduces efficiency. 
+
+Molecular dynamics, on the other hand, is efficient: every evaluation the energy and forces will be put to good use. This does however mean that one must implements gradients of the experimental potential, which is a pain. However, I have gone through that pain for you. 
+
+This means that we can greatly scale our simulations from before. As shown in our preprints (https://arxiv.org/abs/2508.17132, and  https://arxiv.org/abs/2509.22388) we can go up multiple orders of magnitude in terms of system size due to this. 
+
+
+$$\begin{aligned}
+    V_{\rm total}           &= V_{\rm GAP} + \tilde{V}_{\rm exp} \\
+    \tilde{V}_{\rm exp}     &=  \frac{1}{2} \gamma \left( \mathbf{w} \odot \left(\mathbf{I}_{\rm {pred}}( \{\mathbf{r}\} ) - \mathbf{I}_{\rm {exp}}\right)\right)^2 \\
+    \tilde{f}_{ k}^{\alpha} &= -\frac{\partial \tilde{V}_{{\mathrm{exp}}}}{\partial r^{\alpha}_k} \\
+                            &=   - \gamma \mathbf{w} \odot \frac{\partial \mathbf{I}_{\rm pred}(\left\{ \mathbf{r}\right\})}{\partial r^{\alpha}_k} \cdot \mathbf{w} \odot \left(\mathbf{I}_{\rm {pred}}(\left\{ \mathbf{r}\right\}) - \mathbf{I}_{\rm {exp}} \right).
+\end{aligned}$$
+
+
+
+$$  \begin{aligned}
+    \frac{\partial}{\partial r_{k}^{\alpha}} {\hat{S}_{ab}}(Q; \{\mathbf{r}\}) &=  4\pi \rho (c_{a} c_{b})^{1/2} \nonumber\\ &\int^{r_{\rm cut}}_0 \,d r   \left( r^2\frac{\sin( Q r )}{Qr} \frac{\sin( \pi r / r_{\rm cut} )}{\pi r / r_{\rm cut}}  \frac{\partial {\hat{g}_{ab}}(r; \{\mathbf{r}\})}{\partial r^{\alpha}_k}  \right).
+  \end{aligned} $$
+
+  Modify these by the scattering factors to get the XRD/ND gradients.
+$$    \frac{\partial I^{\rm X}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k} = \sum_{a b}^{n_{\rm s}} f_{a}(Q) f_{b}(Q) (c_{a}c_{b})^{1/2}  \frac{\partial {\hat{S}_{a b}}(Q; \{\mathbf{r}\})}{\partial r^{\alpha}_k},
+$$
+
+  Finally obtain the forces to match experiment.
+  $$
+    \tilde{f}_k^{\alpha} = - \frac{\partial
+      V^{\rm X}}{\partial r^{\alpha}_k}  =  - \gamma \mathbf{w}\odot\frac{\partial
+      \mathbf{I}^{\rm X}_{\rm pred}}{\partial r^{\alpha}_k} \cdot \left( \mathbf{w}\odot \left(
+        \mathbf{I}^{\rm X}_{\rm {pred}} - \mathbf{I}^{\rm X}_{\rm {exp}} \right) \right).
+$$
