@@ -6,7 +6,7 @@ mkdir -p $workdir
 
 cp input_files/input_xps_optimization_gcmc ${workdir}/input
 
-cp xps_spectra_interp.dat ${workdir}/
+cp data/xps_spectra_interp.dat ${workdir}/
 
 cp structures/melted_atoms.xyz ${workdir}/atoms.xyz
 

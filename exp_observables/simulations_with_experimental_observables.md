@@ -29,6 +29,8 @@ data, and knowledge of the species proportions of a measured, can we find out wh
 
 First, lets see how we can make an experimental observable prediction.
 
+Note on scripts, if you need help, theres helper scripts for all of the examples, numbered according to the exercises. 
+
 # Prediction
 
 Much of the relevant keywords for TurboGAP to predict powder diffraction-derived quantities (observables 1-3 above) can be found in `input_files/xrd_options`. 
