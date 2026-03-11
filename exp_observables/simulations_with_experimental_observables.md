@@ -237,7 +237,7 @@ We don't have enough time to really optimize the structure, but, one is really a
 
 One further thing to note is the fact that such a method allows for direct interpretation of experimental data. The interpretation of XPS spectra is a problem fraught with difficulties for experimentalists. Using atomistic models, we can directly deconvolve the XPS spectra into its constitutent parts using such optimization
 
-![XPS deconvolution](images/deconvolution_comparison_fill_justhigh.pdf)
+![XPS deconvolution](images/deconvolution_comparison_fill_justhigh.png)
 
 
 ## Molecular Augmented Dynamics
