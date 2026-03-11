@@ -233,6 +233,13 @@ exp_energy_scales = 10.0 100.0
 Do some reverse monte-carlo simulation using `turbogap mc` from the melted structure and pretend you don't know where the XPS data we are using came from. How different is the XPS data from the initial graphite-oxygen structure to this? 
 
 
+We don't have enough time to really optimize the structure, but, one is really able to find suitable structures which are both low in energy on the potential energy surface, yet agree with experimental data. From the MD example earlier, we can see there is a proclivity for CO/CO_2 to form when doing high temperature annealing. This state-of-the-art protocol for generating metastable structures does not work for oxygenated amorphous carbon. Hence using Reverse Monte-Carlo is a feasible means for generating such structures, inhibiting features which are not seen in experiment. 
+
+One further thing to note is the fact that such a method allows for direct interpretation of experimental data. The interpretation of XPS spectra is a problem fraught with difficulties for experimentalists. Using atomistic models, we can directly deconvolve the XPS spectra into its constitutent parts using such optimization
+
+![XPS deconvolution](images/deconvolution_comparison_fill_justhigh.pdf)
+
+
 ## Molecular Augmented Dynamics
 
 Reverse Monte-Carlo is very useful for being able to sample complex observables, where derivatives with respect to the atomic position are lacking, however, it is prone to being stuck in minima. In general the acceptance criterion for a monte-carlo move is $\alpha \propto \exp (-\Delta E)$. Hence, when there are stable motifs found in the structure, it is very hard for the whole system to move out of them, with many trial configurations being rejected, which reduces efficiency. 
