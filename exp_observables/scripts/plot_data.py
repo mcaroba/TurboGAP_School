@@ -41,11 +41,23 @@ with open( filename, 'r' ) as f:
     # usually the format is in x, y, (weight - optional)
     all_data = []
     n_data = 0
-    while ( not f.read() is None  or f.read() != ""): 
-        n, m, data = read_datablock(f) 
-        all_data.append(data)
-        n_data +=1 
-        print(n, m, n_data)
+
+    line = f.readline()
+
+    n = len( line.split() ) 
+    m = 0
+    data = np.array([ float( s ) for s in line.split() ])
+    m += 1 
+    line = f.readline()
+    while ( len( line.split() ) > 0 ):
+        new_data = np.array([ float( s ) for s in line.split() ])
+        data = np.vstack( (data, new_data) )
+        m += 1 
+        line = f.readline()
+        if (len( line.split() )   ==   0 ): 
+            all_data.append( data)
+            line = f.readline()
+            data = np.array([ float( s ) for s in line.split() ])
 print(all_data) 
 
     # line = f.readline()
