@@ -97,6 +97,7 @@ do_pair_distribution        = .true.     # Calculate the XRD from the pair distr
 pair_distribution_kde_sigma =   0.1      # -> Use Gaussian Kernel Density Estimate of 
                                          #    width 0.1A to smooth out, accounting for thermal
                                          #    broadening
+pair_distribution_n_samples =  201       # -> Number of samples used for pdf. 
 pair_distribution_partial   = .true.     # -> Calculate partial pair-distribution functions
 pair_distribution_rcut      =  10.6      # -> Cutoff partial pair distribution 
 r_range_min                 =   0.1      # -> Range for the PDF calculation   
@@ -112,19 +113,23 @@ structure_factor_from_pdf   = .true.     # -> Fourier transform the pair distrib
                                          #    to obtain the uncorrected structure factors, which
                                          #    when corrected give the XRD pattern. 
 structure_factor_window     = .true.     # -> Use a multiplicative "windowing" function 
-                                         #    (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier transform
-                                         #    of pdf to minimize high frequency artifacts resulting
-                                         #    from the finite range fourier transform.
+                                         #    (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier 
+                                         #    transform of pdf to minimize high frequency 
+                                         #    artifacts resulting from the finite range.
 write_structure_factor      = .true.     # -> Write out structure factors
 
 
                                          # --- X-ray parameters ---
+                                         # --- (swap 'xrd' with 'nd' in keywords for neutron diffraction)
                                          # ------------------------
 do_xrd                      = .true.     # Do X-Ray diffraction prediction 
 q_range_min                 =   0.1      # -> Range for the XRD/structure factor calculation:
                                          #    q = 4 pi sin( theta ) / lambda, where theta is 
                                          #    the half angle of diffraction
 q_range_max                 =  10.0      # -> - " - 
+xrd_n_samples               =  101       # -> Number of samples for the xrd pattern, if 
+                                         #    experimental data is provided, this is overriden 
+                                         #    by the exp_n_samples
 write_xrd                   = .true.     # -> Write out xrd pattern
 xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier 
                                          #    transform of G(r), the reduced PDF (this can be 
@@ -135,8 +140,15 @@ xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the dire
 
 As can be seen in the `input_files/xrd_options`
 
+Similarly, one can do this for XPS, if there is an appropriate local property
+model which is specified in the .gap file.
 
-Similarly, one can do this for XPS, which will be mentioned later.
+```conf
+do_xps           = .true.
+xps_e_min        =   280
+xps_e_max        =   300
+xps_n_samples    =   301
+```
 
 ## Exercise 1. 
 
@@ -144,70 +156,17 @@ Here, we will just get used to using the prediction keywords.
 
 First, lets do a simple simulation where destroy some graphite with oxygen. 
 
-```ipython
-from ase.lattice.hexagonal import *
-import ase.io as io
-from ase import Atoms, Atom
-from ase.neighborlist import NeighborList, natural_cutoffs
-import copy
-import numpy as np 
+We can first run the python script in the terminal to make a .xyz file where we have randomly inserted oxygens into a graphite structure. 
+`python scripts/make_graphite_O.py`
 
-index1 = 4
-index2 = 3
-mya    = 2.46
-myc    = 6.70 
+Now, lets see what happens to the XRD pattern as we melt this structure. 
 
-stacks = 1 
+Create an input file which does high-temperature MD to melt this structure, which also shows the XRD pattern. 
 
-gra = Graphite(symbol = 'C',latticeconstant={'a':mya,'c':myc},
-               size=(index1,index2,stacks))
-io.write('graphite.xyz', gra, format='extxyz')
+If you're struggling, you can use the input file which is provided in the input files section `input_files/input_melt_graphite_CO`
 
-# Now modify this with some oxygen 
-
-nc = len( gra )
-no = int( nc / 3 ) + 1 
-n_tot = nc + no 
-o_c_ratio = no / nc 
-
-print( f"Cell will have {nc} carbon atoms and {no} oxygen atoms, with O:C ratio of {o_c_ratio}")
-
-px  = gra.cell[0]
-py  = gra.cell[1]
-pz  = gra.cell[2]
-
-atoms = copy.deepcopy( gra )
-
-min_dist = 1.0
-
-for i in range( no ): 
-   inserted_O = False 
-
-   while ( not inserted_O ): 
-        r3 = np.random.random_sample( (3,) )
-        position = px * r3[0] + py * r3[1] + pz * r3[2]
-
-        temp_atoms = atoms + Atoms('O', positions=[position])
-        
-        # 2. Check distances
-        # Get neighbors within min_dist
-        cutoffs = [min_dist / 2.0] * len(temp_atoms)
-        nl = NeighborList(cutoffs, self_interaction=False, 
-                                        bothways=True)
-        nl.update(temp_atoms)
-        
-        # Check if the new atom (last in list) has any neighbors
-        indices = nl.get_neighbors(len(temp_atoms) - 1)[0]
-        if len(indices) == 0:
-            inserted_O = True
-            atoms = temp_atoms
-            print( f"added O atom {i:3d} at ", position)
-        else: 
-            continue
-
-
-io.write('atoms.xyz', atoms, format='extxyz')
-```
+Now lets have a look at what is going on with the observables. How does the XRD
+change from the initial unmelted structure to the final one? What about the XPS? 
 
 
 # Structural Inference
@@ -269,6 +228,10 @@ exp_n_samples = 501 201
 exp_energy_scales = 10.0 100.0                         
 ```
 
+### Exercise 2. 
+
+Do some reverse monte-carlo simulation using `turbogap mc` from the melted structure and pretend you don't know where the XPS data we are using came from. How different is the XPS data from the initial graphite-oxygen structure to this? 
+
 
 ## Molecular Augmented Dynamics
 
@@ -303,6 +266,33 @@ $$
       \mathbf{I}^{\rm X}_{\rm pred}}{\partial r^{\alpha}_k} \cdot \left( \mathbf{w}\odot \left(
         \mathbf{I}^{\rm X}_{\rm {pred}} - \mathbf{I}^{\rm X}_{\rm {exp}} \right) \right).
 $$
+
+
+For doing MAD simulations, all of the above is similar, except that we are doing molecular dynamics! To turn on MAD forces we use the keyword `exp_forces = .true.` after the specification of fitting to experiment, the keywords in the reverse monte-carlo section. MAD will work only when there is a valid set of experimental data and a means for a forward experimental prediction. 
+
+ 
+``` config
+# Experimental Data Specification
+n_exp = 1                                     # Number of experimental observables we wish 
+                                              # the structure to replicate
+exp_labels = 'xps'                            # Labels of experimental observables 
+                                              # (currently limited to xps/xrd/nd/pdf)
+exp_data_files = 'xps_spectra_interp.dat'     # Experimental data
+exp_n_samples = 501                           # Number of samples for linear interpolation 
+                                              # of experimental data (needed if data is not on 
+                                              # a uniform grid), this number should be greater 
+                                              # than the number of data points in the experimental file.
+exp_energy_scales = 10.0                      # The energy scale "gamma" as above
+
+exp_energies = .true.
+exp_forces   = .true.
+```
+
+
+## Exercise 3.
+
+If time permits, do a MAD simulation which tries to fit the XPS data from the melted graphite O structure. 
+
 
 
 ## General considerations when using experimental estimations

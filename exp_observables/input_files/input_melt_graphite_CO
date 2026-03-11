@@ -1,0 +1,72 @@
+! Species-specific info
+atoms_file = 'atoms.xyz'
+pot_file = 'gap_files/CO.gap'
+n_species = 2
+species = C O
+masses = 12.01 15.99
+e0 = -.16138053 0.
+
+
+                                         # --- PDF parameters ---
+                                         # ----------------------
+do_pair_distribution        = .true.     # Calculate the XRD from the pair distribution 
+                                         # function, so it scales linearly with the number of atoms
+pair_distribution_kde_sigma =   0.1      # -> Use Gaussian Kernel Density Estimate of 
+                                         #    width 0.1A to smooth out, accounting for thermal
+                                         #    broadening
+pair_distribution_n_samples =  201       # -> Number of samples used for pdf. 
+pair_distribution_partial   = .true.     # -> Calculate partial pair-distribution functions
+pair_distribution_rcut      =  10.6      # -> Cutoff partial pair distribution 
+r_range_min                 =   0.1      # -> Range for the PDF calculation   
+r_range_max                 =  10.0      # -> Range - " - 
+write_pair_distribution     = .true.     # -> Write out pair distribution functions 
+
+
+                                         # --- SF parameters ---
+                                         # ---------------------
+do_structure_factor         = .true.     # Use (raw, non-scattering factor corrected) 
+                                         # (partial) structure factor(s) for calculations 
+structure_factor_from_pdf   = .true.     # -> Fourier transform the pair distribution functions 
+                                         #    to obtain the uncorrected structure factors, which
+                                         #    when corrected give the XRD pattern. 
+structure_factor_window     = .true.     # -> Use a multiplicative "windowing" function 
+                                         #    (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier 
+                                         #    transform of pdf to minimize high frequency 
+                                         #    artifacts resulting from the finite range.
+write_structure_factor      = .true.     # -> Write out structure factors
+
+
+                                         # --- X-ray parameters ---
+                                         # --- (swap 'xrd' with 'nd' in keywords for neutron diffraction)
+                                         # ------------------------
+do_xrd                      = .true.     # Do X-Ray diffraction prediction 
+q_range_min                 =   0.1      # -> Range for the XRD/structure factor calculation:
+                                         #    q = 4 pi sin( theta ) / lambda, where theta is 
+                                         #    the half angle of diffraction
+q_range_max                 =  10.0      # -> - " - 
+xrd_n_samples               =  101       # -> Number of samples for the xrd pattern, if 
+                                         #    experimental data is provided, this is overriden 
+                                         #    by the exp_n_samples
+write_xrd                   = .true.     # -> Write out xrd pattern
+xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier 
+                                         #    transform of G(r), the reduced PDF (this can be 
+                                         #    'F(q)'/'i(q)' or the full xrd intensity 'xrd')
+
+
+
+do_xps           = .true.
+xps_e_min        =   280
+xps_e_max        =   300
+xps_n_samples    =   301
+
+t_beg = 9000 
+t_end = 5000 
+
+thermostat = berendsen
+
+# XPS smearing
+xps_sigma = 0.4 
+
+md_nsteps = 5000
+
+write_xyz = 10           # Write to the xyz files, in this case mc_all.xyz / mc_current.xyz / mc_trial.xyz every 10 MC steps
