@@ -10,7 +10,7 @@ index2 = 3
 mya    = 2.46
 myc    = 6.70 
 
-stacks = 2 
+stacks = 1 
 
 gra = Graphite(symbol = 'C',latticeconstant={'a':mya,'c':myc},
                size=(index1,index2,stacks))
@@ -23,38 +23,40 @@ no = int( nc / 3 ) + 1
 n_tot = nc + no 
 o_c_ratio = no / nc 
 
+print( f"Cell will have {nc} carbon atoms and {no} oxygen atoms, with O:C ratio of {o_c_ratio}")
+
 px  = gra.cell[0]
 py  = gra.cell[1]
 pz  = gra.cell[2]
 
 atoms = copy.deepcopy( gra )
-trial_atoms = copy.deepcopy( atoms )
 
-dist_tol = 1.0
+min_dist = 1.0
 
 for i in range( no ): 
    inserted_O = False 
-   tried_O = False 
-   atoms_prev = copy.deepcopy( trial_atoms )
 
    while ( not inserted_O ): 
         r3 = np.random.random_sample( (3,) )
         position = px * r3[0] + py * r3[1] + pz * r3[2]
-        
-        if ( not tried_O ): 
-           new_atom = Atom( 'O', position = position  ) 
-           trial_atoms.append( new_atom )
-           tried_O = True
-        else: 
-           trial_atoms.position[-1] = position
-        
-        distances = atoms_prev.get_distances( trial_atoms, len(trial_atoms) - 1, mic=True )
 
-        if ( any( distances < dist_tol ) ): 
-           continue 
-        else: 
+        temp_atoms = atoms + Atoms('O', positions=[position])
+        
+        # 2. Check distances
+        # Get neighbors within min_dist
+        cutoffs = [min_dist / 2.0] * len(temp_atoms)
+        nl = NeighborList(cutoffs, self_interaction=False, 
+                                        bothways=True)
+        nl.update(temp_atoms)
+        
+        # Check if the new atom (last in list) has any neighbors
+        indices = nl.get_neighbors(len(temp_atoms) - 1)[0]
+        if len(indices) == 0:
             inserted_O = True
-            atoms = copy.deepcopy( trial_atoms )
+            atoms = temp_atoms
+            print( f"added O atom {i:3d} at ", position)
+        else: 
+            continue
 
 
 io.write('atoms.xyz', atoms, format='extxyz')

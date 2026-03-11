@@ -25,7 +25,7 @@ And we further have aims to extend this to more observables: Raman, IR,
 NMR, XAS and TEM just to name a few!
 
 In this tutorial, we will try to be an experimentalist (detective): given some experimental
-data, and knowledge of the species proportions, can we find out what structure we have analysed?
+data, and knowledge of the species proportions of a measured, can we find out what the structure is?
 
 First, lets see how we can make an experimental observable prediction.
 
@@ -140,23 +140,24 @@ Similarly, one can do this for XPS, which will be mentioned later.
 
 ## Exercise 1. 
 
-Here, we will just get used to using the prediction terms. 
+Here, we will just get used to using the prediction keywords. 
 
 First, lets do a simple simulation where destroy some graphite with oxygen. 
 
-```python
+```ipython
 from ase.lattice.hexagonal import *
 import ase.io as io
 from ase import Atoms, Atom
 from ase.neighborlist import NeighborList, natural_cutoffs
 import copy
+import numpy as np 
 
 index1 = 4
 index2 = 3
 mya    = 2.46
 myc    = 6.70 
 
-stacks = 2 
+stacks = 1 
 
 gra = Graphite(symbol = 'C',latticeconstant={'a':mya,'c':myc},
                size=(index1,index2,stacks))
@@ -165,9 +166,11 @@ io.write('graphite.xyz', gra, format='extxyz')
 # Now modify this with some oxygen 
 
 nc = len( gra )
-no = ceil( nc / 3 )
+no = int( nc / 3 ) + 1 
 n_tot = nc + no 
 o_c_ratio = no / nc 
+
+print( f"Cell will have {nc} carbon atoms and {no} oxygen atoms, with O:C ratio of {o_c_ratio}")
 
 px  = gra.cell[0]
 py  = gra.cell[1]
@@ -175,31 +178,35 @@ pz  = gra.cell[2]
 
 atoms = copy.deepcopy( gra )
 
-dist_tol = 1.0
+min_dist = 1.0
 
 for i in range( no ): 
    inserted_O = False 
-   tried_O = False 
+
    while ( not inserted_O ): 
         r3 = np.random.random_sample( (3,) )
         position = px * r3[0] + py * r3[1] + pz * r3[2]
+
+        temp_atoms = atoms + Atoms('O', positions=[position])
         
-        if ( not tried_O ): 
-           new_atom = Atom( 'O', position = position  ) 
-           trial_atoms = atoms.append( new_atom )
-           tried_O = True
-        else: 
-           trial_atoms.position[-1] = position
+        # 2. Check distances
+        # Get neighbors within min_dist
+        cutoffs = [min_dist / 2.0] * len(temp_atoms)
+        nl = NeighborList(cutoffs, self_interaction=False, 
+                                        bothways=True)
+        nl.update(temp_atoms)
         
-        distances = atoms.get_distances( len(trial_atoms) - 1, mic=True )
-        if ( any( distances < dist_tol ) ): 
-           continue 
-        else: 
+        # Check if the new atom (last in list) has any neighbors
+        indices = nl.get_neighbors(len(temp_atoms) - 1)[0]
+        if len(indices) == 0:
             inserted_O = True
-            atoms = copy.deepcopy( trial_atoms )
+            atoms = temp_atoms
+            print( f"added O atom {i:3d} at ", position)
+        else: 
+            continue
+
 
 io.write('atoms.xyz', atoms, format='extxyz')
-
 ```
 
 
