@@ -193,6 +193,51 @@ vector, with samples $[\mathbf{h}]_i$ at $[\mathbf{E}]_i$.
 We can use this energy Grand-Canonical Monte-Carlo simulations to create
 structures which agree with experimental XPS data by design.
 
+### What is XPS?
+XPS is a characterization method which allows for atomic environments to be distinguished. The primary measured quantity are core-electron binding energies, which are obtained by firing an X-ray at the sample, a core electron being ejected, and it's kinetic energy measured (where the difference in incident photon energy and the kinetic energy gives the core-electron binding energy). Core-electron binding
+energies are primarily dependent on their _local environment_. Different
+motifs exhibit different core-electron binding energies. 
+
+Therefore, given a spectrum of core-electron binding energies from a sample, and assuming locality, experimentalists can deconvolve this spectrum into contributions from different motifs by trying to fit this spectrum using reference databases of core-electron binding energies. This gives the relative proportions of
+% motifs in their samples. 
+
+An XPS model can be made if this environmental sensitivity of the core electron
+can be sufficiently described. Simple analytical models for such a dependence do not exist due to the quantum-mechanical nature of the problem. However, we can use the flexibility of kernel ridge regression to furnish us with a forward model for XPS prediction using ab-initio reference data. We use the core-electron binding energy models of Golze 2022 (https://doi.org/10.1021/acs.chemmater.1c04279), trained on DFT and $GW$ calculations. 
+
+XPS spectrum predictions $\tilde{I}^{\rm XPS} \left( \varepsilon ; \left\{\mathbf{r}\right\}\right)$ are obtained from core-electron binding energies $\varepsilon^i_{\rm pred} =
+\varepsilon^i_{\rm pred}\left(\mathbf{q}^i(\left\{ \mathbf{r} \right\})\right)$,
+where $i$ is the index of an atom and $\mathbf{q}^i$ is the many-body descriptor of the $i$th atom's local environment (SOAP turbo descriptors). To account for thermal and experimental broadening, one can smear
+out these core-electron binding energies by a Gaussian, resulting in the
+following expression for the XPS spectrum:
+$$
+     \tilde{I}^{\rm XPS}(\varepsilon; \{\mathbf{r}\})  = \sum_{i} \exp\left(
+-\frac{\left(\varepsilon - \varepsilon^{i}_{\rm {pred}}\right)^2}{2\sigma_{\rm xps}^2}\right).
+$$
+
+<!-- Such a model provides an example of an observable which depends on predicted local quantities, in this case $\varepsilon^i_{\rm pred}(\mathbf{q}^i(\{\mathbf{r}\})$, which cannot be expressed as simple functions of atomic positions.  -->
+<!-- % In particular, $\varepsilon^{i}_{\rm pred}$ in Ref.~\cite{golze_2022} uses a kernel ridge regression \gls{ML} approach trained from \textit{ab-initio} reference data~\cite{klawohn_2023}.  -->
+<!-- The critical point to note is that this formulation accepts analytical gradients of the local property.  -->
+<!-- Taking the derivative, and exploiting the differentiable nature of atomic descriptors, we obtain: -->
+<!-- \begin{align}\label{eq:xps_forces} -->
+<!--  &\frac{\partial \tilde{I}^{\rm XPS}(\varepsilon; \{\mathbf{r}\})}{\partial -->
+<!-- r^{\alpha}_k} = \nonumber\\ -->
+<!-- &\sum_{i} \frac{(\varepsilon - \varepsilon^{i}_{\rm pred})}{\sigma_{\rm xps}^2} -->
+<!-- \frac{\partial \varepsilon^{i}_{\rm pred}}{\partial r^{\alpha}_k} -->
+<!--  \exp\left( -->
+<!-- -\frac{(\varepsilon - \varepsilon^{i}_{\rm {pred}})^2}{2\sigma_{\rm xps}^2}\right), -->
+<!-- \end{align} -->
+<!-- where, -->
+<!-- \begin{equation} -->
+<!-- \frac{\partial \varepsilon^{i}_{\rm pred}\left(  \mathbf{q}^i\left( \left\{ \mathbf{r}\right\} \right) \right) }{\partial r^{\alpha}_k} =  \nabla_{\mathbf{q}^i} \varepsilon^{i}_{\rm pred} \cdot \frac{\partial   \mathbf{q}^i\left( \left\{ \mathbf{r}\right\} \right)  }{\partial r^{\alpha}_k}. -->
+<!-- \end{equation} -->
+<!-- In the case of the model from Ref.~\cite{golze_2022}, $\varepsilon^{i}_{\rm pred}$ is given as a linear -->
+<!-- combination of dot-product kernels: -->
+<!-- \begin{equation} -->
+<!-- \varepsilon^{i}_{\rm pred} (\mathbf{q}^i(\{\mathbf{r}\})) = \varepsilon_0 +  \delta_s^2 \sum_s \alpha_s \left( \mathbf{q}^i \cdot -->
+<!-- \mathbf{q}^s \right)^\zeta, -->
+<!-- \end{equation} -->
+
+
 ### Invoking XPS optimization in Turbogap
 
 We simply add this to the input file
