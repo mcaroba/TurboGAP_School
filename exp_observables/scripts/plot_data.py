@@ -60,6 +60,17 @@ with open( filename, 'r' ) as f:
             data = np.array([ float( s ) for s in line.split() ])
 print(all_data) 
 
+import matplotlib.pyplot as plt
+
+fig = plt.figure()
+
+ax = fig.add_subplot( 111 )
+
+for d in all_data:
+    ax.plot( d[:,0], d[:,1] )
+
+plt.show()
+
     # line = f.readline()
 
     # n = len( line.split() ) 
