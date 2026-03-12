@@ -15,11 +15,10 @@ exp_n_samples = 501                        # Number of interpolations samples ov
 exp_energy_scales_beg = 100.0                    # Energy scale (gamma) [eV]
 exp_energy_scales_end = 0.0                      # Energy scale (gamma) [eV]
 
-t_beg = 1000 
-t_end = 100 
+t_beg = 5000 
+t_end = 1000 
 
 thermostat = berendsen
-barostat   = berendsen
 
 
 # XPS smearing

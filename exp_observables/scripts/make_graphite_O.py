@@ -19,7 +19,7 @@ io.write('graphite.xyz', gra, format='extxyz')
 # Now modify this with some oxygen 
 
 nc = len( gra )
-no = int( nc / 3 ) + 1 
+no = int( nc / 4 ) + 1 
 n_tot = nc + no 
 o_c_ratio = no / nc 
 
