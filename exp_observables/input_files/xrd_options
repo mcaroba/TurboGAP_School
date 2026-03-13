@@ -1,6 +1,6 @@
 
 do_xrd                      = .true.     # Do X-Ray diffraction prediction 
-q_range_min                 =   0.1      # -> Range for the XRD/structure factor calculation: q = 4 pi sin( theta ) / lambda, where theta is the half angle of diffraction
+q_range_min                 =   1.0      # -> Range for the XRD/structure factor calculation: q = 4 pi sin( theta ) / lambda, where theta is the half angle of diffraction
 q_range_max                 =  10.0      # -> Range - " - 
 write_xrd                   = .true.     # -> Write out xrd pattern
 xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier transform of G(r), the reduced PDF (this can be 'F(q)'/'i(q)' or the full xrd intensity 'xrd')
