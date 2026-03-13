@@ -5,12 +5,12 @@ from ase.neighborlist import NeighborList, natural_cutoffs
 import copy
 import numpy as np 
 
-index1 = 4
-index2 = 3
+index1 = 3
+index2 = 2
 mya    = 2.46
 myc    = 6.70 
 
-stacks = 1 
+stacks = 3 
 
 gra = Graphite(symbol = 'C',latticeconstant={'a':mya,'c':myc},
                size=(index1,index2,stacks))
