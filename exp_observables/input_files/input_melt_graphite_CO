@@ -67,6 +67,6 @@ thermostat = berendsen
 # XPS smearing
 xps_sigma = 0.4 
 
-md_nsteps = 5000
+md_nsteps = 2000
 
 write_xyz = 10           # Write to the xyz files, in this case mc_all.xyz / mc_current.xyz / mc_trial.xyz every 10 MC steps
