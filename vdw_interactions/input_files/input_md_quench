@@ -1,0 +1,44 @@
+atoms_file = 'p4_md_quench.xyz'
+pot_file = 'gap_files/phosphorus.gap'
+
+! Species info
+n_species = 1
+species = P
+e0 = -0.52375977
+masses = 30.97
+
+! van der Waals info
+vdw_type = ts
+!vdw_type = ts+mbd
+vdw_rcut = 25.
+vdw_r0_ref = 2.12
+vdw_alpha0_ref = 3.7046
+vdw_c6_ref = 110.54
+vdw_buffer = 0.5          ! Buffer for transitions between cut-off regions. Type: REAL
+vdw_scs_rcut = 5.         ! SCS cut-off for polarizabilities. Type: REAL
+vdw_loc_rcut = 5.         ! Cut-off for including polarizability gradients in force calculation (vdw_loc_rcut <= vdw_scs_rcut).
+vdw_mbd_rcut = 15.0         ! Cut-off for atoms to include for local MBD energy (cut-off for central atom). Type: REAL
+vdw_mbd_rcut2 = 10.0        ! Secondary MBD cut-off (cut-off sphere for neighbors)
+vdw_2b_rcut = 15.0          ! Primary 2b cut-off (cut-off for central atom). Type: REAL
+vdw_2b_rcut2 = 10.0         ! Secondary 2b cut-off (cut-off sphere for neighbors).
+vdw_mbd_nfreq = 13        ! Number of frequency values for MBD integration. Type: INT
+vdw_mbd_norder = 6        ! Contributions up to n-body interactions (i.e. cut-off degree for Taylor expansion of ln(I-AT)). Type: INT
+
+! MD options
+md_nsteps = 10000
+md_step = 2.
+thermostat = bussi
+t_beg = 800
+t_end = 200
+tau_t = 100.
+barostat = berendsen
+barostat_sym = iso
+p_beg = 1.
+p_end = 1.
+gamma_p = 10.
+tau_p = 1000.
+write_thermo = 1
+write_xyz = 10
+write_lv = .true.
+neighbors_buffer = 0.5
+!mbd_correction_freq = 100

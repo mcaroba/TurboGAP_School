@@ -1,0 +1,24 @@
+atoms_file = 'p4_dimer.xyz'
+pot_file = 'gap_files/phosphorus.gap'
+
+! Species info
+n_species = 1
+species = P
+e0 = -0.52375977
+masses = 30.97
+
+! van der Waals info
+vdw_type = mbd
+vdw_rcut = 25.
+vdw_r0_ref = 2.12
+vdw_alpha0_ref = 3.7046
+vdw_c6_ref = 110.54
+vdw_buffer = 0.5          ! Buffer for transitions between cut-off regions. Type: REAL
+vdw_scs_rcut = 5.         ! SCS cut-off for polarizabilities. Type: REAL
+vdw_loc_rcut = 5.         ! Use the same one as vdw_scs_rcut for now!
+vdw_mbd_rcut = 15.0         ! Cut-off for atoms to include for local MBD energy (cut-off for central atom). Type: REAL
+vdw_mbd_rcut2 = 10.0        ! Secondary MBD cut-off (cut-off sphere for neighbors)
+vdw_2b_rcut = 15.0          ! Primary 2b cut-off (cut-off for central atom). Type: REAL. Use the same values as vdw_mbd_rcut unless you want larger cutoff for two-body term.
+vdw_2b_rcut2 = 10.0         ! Secondary 2b cut-off (cut-off sphere for neighbors).
+vdw_mbd_nfreq = 13        ! Number of frequency values for MBD integration. Type: INT
+vdw_mbd_norder = 6        ! Contributions up to n-body interactions (i.e. cut-off degree for expansion of ln(I-AT)). Type: INT, minimum: 2
