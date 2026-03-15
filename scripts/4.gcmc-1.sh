@@ -10,4 +10,4 @@ cd $workdir
 
 ln -sf ../gap_files ./
 
-mpirun -np 8 turbogap mc
+mpirun -np 10 turbogap mc

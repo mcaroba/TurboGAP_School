@@ -10,7 +10,7 @@ cd $workdir
 
 ln -sf ../gap_files ./
 
-mpirun -np 14 turbogap md
+mpirun -np 10 turbogap md
 n=$(head -1 trajectory_out.xyz | awk '{print $1+2}')
 tail -$n trajectory_out.xyz > atoms2.xyz
 cp atoms2.xyz ../structures
