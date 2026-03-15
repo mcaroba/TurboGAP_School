@@ -1,4 +1,4 @@
-atoms_file = 'atoms3.xyz'
+atoms_file = 'PW79_AuPd.xyz'
 pot_file = 'gap_files/pdauh.gap'
 n_species = 3
 species = Pd Au H
@@ -8,7 +8,7 @@ e0 = -1.46623303 -0.17939474 -1.11172070
 t_beg = 300
 t_end = 300
 !
-write_xyz = 1
+write_xyz = 10
 !
 mc_nsteps = 10000
 n_mc_types = 2          ! Number of mc move types
