@@ -13,6 +13,6 @@ optimize = "vv"
 thermostat = "bussi"
 t_beg = 1000
 t_end = 1000
-tau_t = 10.
+tau_t = 100.
 !
 write_xyz = 10
