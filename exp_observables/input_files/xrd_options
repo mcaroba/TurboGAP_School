@@ -1,0 +1,19 @@
+
+do_xrd                      = .true.     # Do X-Ray diffraction prediction 
+q_range_min                 =   1.0      # -> Range for the XRD/structure factor calculation: q = 4 pi sin( theta ) / lambda, where theta is the half angle of diffraction
+q_range_max                 =  10.0      # -> Range - " - 
+write_xrd                   = .true.     # -> Write out xrd pattern
+xrd_output                  = 'q*F(q)'   # -> Output the XRD pattern as the direct Fourier transform of G(r), the reduced PDF (this can be 'F(q)'/'i(q)' or the full xrd intensity 'xrd')
+
+do_pair_distribution        = .true.     # Calculate the XRD from the pair distribution function, so it scales linearly with the number of atoms
+pair_distribution_kde_sigma =   0.1      # -> Use Gaussian Kernel Density Estimate of width 0.1A to smooth out, accounting for thermal broadening
+pair_distribution_partial   = .true.     # -> Calculate partial pair-distribution functions
+pair_distribution_rcut      =  10.6      # -> Cutoff partial pair distribution 
+r_range_min                 =   0.1      # -> Range for the PDF calculation   
+r_range_max                 =  10.0      # -> Range - " - 
+write_pair_distribution     = .true.     # -> Write out pair distribution functions 
+
+do_structure_factor         = .true.     # Use (raw, non-scattering factor corrected) (partial) structure factor(s) for calculations 
+structure_factor_from_pdf   = .true.     # -> Fourier transform the pair distribution functions to obtain the uncorrected structure factors, which when corrected give the XRD pattern. 
+structure_factor_window     = .true.    # -> Use a multiplicative "windowing" function (sin(pi r / r_cut)/(pi r / r_cut)) in the fourier transform of pdf to minimize high frequency artifacts resulting from the finite range fourier transform.
+write_structure_factor      = .true.     # -> Write out structure factors
