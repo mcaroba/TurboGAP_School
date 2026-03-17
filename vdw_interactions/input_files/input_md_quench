@@ -41,4 +41,4 @@ write_thermo = 1
 write_xyz = 10
 write_lv = .true.
 neighbors_buffer = 0.5
-!mbd_correction_freq = 100
+mbd_correction_freq = 100
