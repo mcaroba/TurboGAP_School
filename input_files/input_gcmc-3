@@ -5,28 +5,18 @@ species = Pd Au H
 masses = 114.82 196.96 1.008
 e0 = -1.46623303 -0.17939474 -1.11172070
 !
-t_beg = 300
-t_end = 300
+t_beg = 600
+t_end = 600
 !
 write_xyz = 10
 !
-mc_nsteps = 10000
-n_mc_types = 2          ! Number of mc move types
-mc_types = 'insertion' 'removal' !types can be: 'insertion' 'removal' 'md' 'swap' 'move'
-mc_acceptance = 1   1   ! Relative rate of choosing the respective trial moves
-mc_move_max = 0.20      ! Maximum distance for the move of a particular particle
+mc_nsteps = 2000                 ! Number of MC steps
+n_mc_types = 2                   ! Number of mc move types
+mc_types = 'insertion' 'removal' ! Mc move types
+mc_acceptance = 1   1            ! Relative rate of choosing the respective trial moves
 !
-n_mc_mu = 1             ! gcmc:
-mc_mu = -3.3            ! gcmc: Chemical potential
-mc_species = 'H'        ! gcmc: species
-mc_min_dist = 0.1       ! gcmc: minimum distance between particles for insertion
-mc_max_dist = 5.0       ! gcmc: maximum distance between particles for insertion
-!
-randomize_velocities = .true.
-!
-!mc_hybrid_opt = 'vv'
-!mc_relax = .false.       ! Allows for relaxation after a given trial move
-!n_mc_relax_after = 2    !
-!mc_relax_after = 'insertion' 'removal' !
-!mc_nrelax = 10          ! Number of relaxation steps for mc_relax
-!mc_relax_opt = 'gd'     ! Type of relaxation for mc_relax
+n_mc_mu = 1                      ! gcmc: Number of chemical potential
+mc_mu = -3.5                     ! gcmc: Chemical potential
+mc_species = 'H'                 ! gcmc: species
+mc_min_dist = 0.1                ! gcmc: minimum distance between particles for insertion
+mc_max_dist = 5.0                ! gcmc: maximum distance between particles for insertion

@@ -4,7 +4,7 @@ rm -rf $workdir
 mkdir -p $workdir
 
 cp input_files/input_gcmc-1 ${workdir}/input
-cp structures/atoms3.xyz ${workdir}/
+cp structures/PW.xyz ${workdir}/
 
 cd $workdir
 
