@@ -85,5 +85,5 @@ vel = 0.01 * (np.random.sample([len(atoms), 3]) - 0.5)
 atoms.set_array("vel", vel)
 
 # Write the atomic structure to an XYZ file for visualization
-write("structures/atoms0.xyz", atoms)
+write("structures/atoms0.xyz" , atoms)
 ##################################################################

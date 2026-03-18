@@ -1,4 +1,4 @@
-atoms_file = 'PW79_dis_AuPd.xyz'
+atoms_file = 'NP_AuPd3.xyz'
 pot_file = 'gap_files/pdauh.gap'
 n_species = 3
 species = Pd Au H
@@ -10,7 +10,7 @@ t_end = 600
 !
 write_xyz = 10
 !
-mc_nsteps = 1500                 ! Number of MC steps
+mc_nsteps = 1500                 ! Number of MC steps / 2000 max
 n_mc_types = 2                   ! Number of mc move types
 mc_types = 'insertion' 'removal' ! Mc move types
 mc_acceptance = 1   1            ! Relative rate of choosing the respective trial moves
