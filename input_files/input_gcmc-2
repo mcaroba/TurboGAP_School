@@ -10,13 +10,13 @@ t_end = 600
 !
 write_xyz = 10
 !
-mc_nsteps = 2000                ! Number of MC steps
+mc_nsteps = 1500                ! Number of MC steps
 n_mc_types = 2                   ! Number of mc move types
 mc_types = 'insertion' 'removal' ! Mc move types
 mc_acceptance = 1   1            ! Relative rate of choosing the respective trial moves
 !
 n_mc_mu = 1                      ! gcmc: Number of chemical potential
-mc_mu = -3.5                     ! gcmc: Chemical potential
+mc_mu = -3.3                     ! gcmc: Chemical potential
 mc_species = 'H'                 ! gcmc: species
 mc_min_dist = 0.1                ! gcmc: minimum distance between particles for insertion
 mc_max_dist = 5.0                ! gcmc: maximum distance between particles for insertion

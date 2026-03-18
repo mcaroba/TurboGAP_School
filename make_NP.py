@@ -28,7 +28,7 @@ a = a_Au * c_Au + a_Pd * c_Pd  # = 3.9840 Angstroms for Au50Pd50
 # Minimum allowed distance between any two atoms (Angstroms)
 d_min = 2.
 # Total number of atoms in the nanoparticle
-n = 79
+n = 25
 ##################################################################
 
 ##################################################################
@@ -77,8 +77,8 @@ n_Au = n - n_Pd            # Number of gold atoms
 # Create the ASE Atoms object with the generated positions
 atoms = Atoms("Au%iPd%i" % (n_Au, n_Pd), positions=pos)
 
-# Add vacuum padding of 12 Angstroms around the cluster (isolates it in the cell)
-atoms.center(vacuum=12.)
+# Add vacuum padding of 5 Angstroms around the cluster (isolates it in the cell)
+atoms.center(vacuum=5.)
 
 # Generate small random initial velocities for each atom (for MD simulations) in Angstrom/fs
 vel = 0.01 * (np.random.sample([len(atoms), 3]) - 0.5)

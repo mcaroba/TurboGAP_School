@@ -1,4 +1,4 @@
-atoms_file = 'atoms1.xyz'
+atoms_file = 'atoms3.xyz'
 pot_file = 'gap_files/pdauh.gap'
 !
 n_species = 3
@@ -11,8 +11,8 @@ md_step = 2.
 !
 optimize = "vv"
 thermostat = "bussi"
-t_beg = 800
-t_end = 100
-tau_t = 100
+t_beg = 600
+t_end = 600
+tau_t = 100.
 !
 write_xyz = 10

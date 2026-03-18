@@ -1,9 +1,9 @@
-workdir="1.melt"
+workdir="1.anneal"
 
 rm -rf $workdir
 mkdir -p $workdir
 
-cp input_files/input_melt ${workdir}/input
+cp input_files/input_anneal ${workdir}/input
 cp structures/atoms0.xyz ${workdir}/
 
 cd $workdir
