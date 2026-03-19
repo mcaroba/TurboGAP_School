@@ -28,7 +28,7 @@ a = a_Au * c_Au + a_Pd * c_Pd  # = 3.9840 Angstroms for Au50Pd50
 # Minimum allowed distance between any two atoms (Angstroms)
 d_min = 2.
 # Total number of atoms in the nanoparticle
-n = 25
+n = 55
 ##################################################################
 
 ##################################################################
