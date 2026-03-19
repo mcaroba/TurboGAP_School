@@ -3,8 +3,8 @@ workdir="5.gcmc-2"
 rm -rf $workdir
 mkdir -p $workdir
 
-cp input_files/input_gcmc-2 ${workdir}/input
-cp structures/atoms4.xyz ${workdir}/NP_AuPd.xyz
+cp input_files/input_gcmc-1 ${workdir}/input
+cp structures/Cu55_AuPd.xyz ${workdir}/atoms4.xyz
 
 cd $workdir
 
