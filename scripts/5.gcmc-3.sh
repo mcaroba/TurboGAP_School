@@ -1,4 +1,4 @@
-workdir="4.gcmc-3"
+workdir="5.gcmc-3"
 
 rm -rf $workdir
 mkdir -p $workdir

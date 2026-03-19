@@ -1,4 +1,4 @@
-workdir="4.anneal"
+workdir="5.anneal2"
 
 rm -rf $workdir
 mkdir -p $workdir
