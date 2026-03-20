@@ -44,7 +44,7 @@ q_range_min                 =   1.0      # -> Range for the XRD/structure factor
                                          #    q = 4 pi sin( theta ) / lambda, where theta is 
                                          #    the half angle of diffraction
 q_range_max                 =  10.0      # -> - " - 
-xrd_n_samples               =  101       # -> Number of samples for the xrd pattern, if 
+xrd_n_samples               =  201       # -> Number of samples for the xrd pattern, if 
                                          #    experimental data is provided, this is overriden 
                                          #    by the exp_n_samples
 write_xrd                   = .true.     # -> Write out xrd pattern
