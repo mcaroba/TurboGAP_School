@@ -5,8 +5,8 @@ species = Pd Au H
 masses = 114.82 196.96 1.008
 e0 = -1.46623303 -0.17939474 -1.11172070
 !
-t_beg = 600
-t_end = 600
+t_beg = 300
+t_end = 300
 !
 write_xyz = 10
 !

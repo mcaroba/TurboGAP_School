@@ -11,8 +11,8 @@ md_step = 2.
 !
 optimize = "vv"
 thermostat = "bussi"
-t_beg = 600
-t_end = 600
+t_beg = 300
+t_end = 300
 tau_t = 100.
 !
 write_xyz = 10

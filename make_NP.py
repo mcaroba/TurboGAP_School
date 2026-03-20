@@ -19,7 +19,7 @@ a_Au = 4.0782
 a_Pd = 3.8898
 
 # Concentration of palladium atoms
-c_Pd = 0.5
+c_Pd = 0.565
 c_Au = 1 - c_Pd
 
 # Effective lattice parameter via Vegard's Law (linear interpolation)
