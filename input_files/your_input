@@ -1,0 +1,37 @@
+atoms_file = 'atoms4.xyz'
+pot_file = 'gap_files/pdauh.gap'
+n_species = 3
+species = Pd Au H
+masses = 114.82 196.96 1.008
+e0 = -1.46623303 -0.17939474 -1.11172070
+!
+!md_nsteps = 30                                                                                !! Uncomment if you use MD move
+!md_step = 1                                                                                   !! Uncomment if you use MD move
+!thermostat = bussi                                                                            !! Uncomment if you use MD move
+t_beg = ...                                                                                    !! Set the temperature
+t_end = ...                                                                                    !! Set the temperature
+!tau_t = 100                                                                                   !! Uncomment if you use MD move
+!randomize_velocities = .true.                                                                 !! Uncomment if you use MD move
+
+!
+mc_nsteps = ...                  ! Number of MC steps                                          !! Set the number of MC steps
+n_mc_types = 2                   ! Number of MC types                                     !! Adapt it to the number of MC move types
+mc_types = 'insertion' 'removal' ! Types of MC trials                                               !! 'swap' 'md' 'move
+mc_acceptance = 1   1            ! Ratio of MC trial moves        !! Adapt it to the number of MC move types
+!
+n_mc_mu = 1                      ! gcmc: Number of chemical potential
+mc_mu = ...                      ! gcmc: Chemical potential                                    !! Set the chemical potential
+mc_species = 'H'                 ! gcmc: species
+mc_min_dist = 0.1                ! gcmc: minimum distance between particles for insertion
+mc_max_dist = 5.0                ! gcmc: maximum distance between particles for insertion
+!
+!n_mc_swaps = 1                                                                                !! Uncomment if you use swap move
+!mc_swaps = 'Pd' 'Au'                                                                          !! Uncomment if you use swap move    
+!                 
+!mc_hybrid_opt = 'vv'           ! Optimisation for MD steps                                    !! Uncomment if you use MD move
+!mc_relax = .true.              ! Relaxation after a given trial move                          !! Uncomment if you want to use relaxation after MC trials
+!n_mc_relax_after = 2           ! Number of specific trials to relax                           !! Uncomment if you want to use relaxation after MC trials
+!mc_relax_after = 'insertion' 'removal' ! Relax specific MC trials types                       !! Uncomment if you want to use relaxation after MC trials
+!mc_nrelax = 20                 ! Number of relaxation steps after trial                       !! Uncomment if you want to use relaxation after MC trials
+!mc_relax_opt = 'gd'            ! Optimisation for relaxing                                    !! Uncomment if you want to use relaxation after MC trials                                                                    
+

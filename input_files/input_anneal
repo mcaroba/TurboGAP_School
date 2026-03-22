@@ -6,7 +6,7 @@ species = Pd Au H
 masses = 114.82 196.96 1.008
 e0 = -1.46623303 -0.17939474 -1.11172070
 !
-md_nsteps = 1000
+md_nsteps = 500
 md_step = 2.
 !
 optimize = "vv"

@@ -1,4 +1,4 @@
-workdir="5.gcmc-comp-2"
+workdir="6.gcmc-comp-2"
 
 rm -rf $workdir
 mkdir -p $workdir
@@ -10,4 +10,4 @@ cd $workdir
 
 ln -sf ../gap_files ./
 
-mpirun -np 4 turbogap mc
+mpirun -np 3 turbogap mc
