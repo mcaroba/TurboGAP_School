@@ -1,0 +1,46 @@
+! Species-specific info
+atoms_file = box
+pot_file = 'gap_files/Si.ZBL-stiff.TGAP.gap'
+n_species = 1
+species = Si
+masses = 28
+
+! MD options
+
+e0 = -158.54496821
+
+md_nsteps = 10000
+md_step = 1.0
+write_thermo = 10
+write_xyz = 100
+
+make_group = grp1 block 6 2.0 118.4 2.0 118.4 2.0 118.4
+make_group = grp2 Subtract 2 all grp1
+
+make_group = grp1 dynamic 100
+make_group = grp2 dynamic 100
+
+thermostat = "berendsen"
+thermostat_groupID = grp2
+t_beg = 324. # in K
+t_end = 324. # in K
+tau_t = 100. # in fs
+
+optimize = "vv"
+optimize_groupID = all
+
+adaptive_time = .true.
+adapt_time_groupID = all
+adapt_tstep_interval = 1
+adapt_tmin = 1.0E-10
+adapt_tmax = 1.0E-00
+adapt_xmax = 1.0E-01
+adapt_emax = 30.0
+
+electronic_stopping = .true.
+eel_groupID = all
+eel_cut = 10.0
+!eel_cut = 1.0
+eel_freq_out = 10
+estop_filename = '../../../tools/Si-in-Si-el-stopping.txt'
+
