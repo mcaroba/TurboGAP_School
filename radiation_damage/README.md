@@ -14,3 +14,4 @@ The implementation follows three main phases:
 * **Phase 2: PKA Selection and Velocity Initialization** A specific atom is designated as the **PKA**. Based on the chosen crystallographic direction, we calculate the velocity components $(v_x, v_y, v_z)$ required to match the target PKA energy in electronvolts (eV).
     
 * **Phase 3: MD Execution and Defect Analysis** The dynamics are launched. After the simulation, we visually check the trajectory to determine if a stable defect has been created. If no defect is found, the simulation should be run with the $E+\Delta E$ PKA energy.
+
