@@ -1,6 +1,6 @@
 ### Introduction
 
-In this tutorial, we run a low-energy PKA cascade simulation to explore defect generation through atomic displacements. Starting from a basic input with a constant timestep, we progressively incorporate recently implemented modules in the TurboGAP code that are relevant to cascade dynamics. Specifically, we examine **adaptive timestep calculation** and the inclusion of **electronic stopping** to more accurately capture the high-energy dynamics of the cascade.
+In this tutorial, we run a low-energy PKA cascade simulation to explore defect generation through atomic displacements. Starting from a basic input with a constant timestep, we progressively incorporate recently implemented modules in the TurboGAP code (https://doi.org/10.1016/j.commatsci.2026.114560) that are relevant to cascade dynamics. Specifically, we examine **adaptive timestep calculation** and the inclusion of **electronic stopping** to more accurately capture the high-energy dynamics of the cascade.
 
 
 ### Implementation details
