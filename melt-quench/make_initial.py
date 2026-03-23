@@ -13,7 +13,7 @@ from ase import Atoms
 ##################################################################
 # Input variables - the user can change these, but be mindful of
 # the choices!
-N = 50 # number of atoms in the simulation box
+N = 30 # number of atoms in the simulation box
 rho = 1. # (initial) density in g/cm3 - this can change if barostatting is used
 T0 = 9000. # (initial) temperature in K - this determines random velocities
 ##################################################################
@@ -46,4 +46,5 @@ atoms = Atoms("C%i" % (N), cell = cell, positions = positions, pbc = True)
 atoms.set_array("velocities", velocities)
 
 write("atoms0.xyz", atoms)
+print("Structure generated!")
 ##################################################################
