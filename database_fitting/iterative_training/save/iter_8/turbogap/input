@@ -1,0 +1,19 @@
+atoms_file = 'melt.xyz'
+pot_file = 'gap_files/CH.gap'
+n_species = 2
+species = C H
+masses = 12.01 1.01
+e0 = 0 0
+
+! MD options
+optimize = vv
+md_nsteps = 4000
+md_step = 0.5
+
+t_beg = 3500.
+t_end = 300.
+tau_t = 100.
+thermostat = bussi
+
+write_xyz = 40
+write_thermo = 1

@@ -13,7 +13,7 @@ In this tutorial, we have:
 
 ### During TurboGAP school
 
-HackMD document for questions and collaborative learning:
+[HackMD document for collaborative learning](https://hackmd.io/o_Syx0ZDTee5dnpgfoj5gA#Analysis-and-Data-Visualization)
 
 Everything else is ready on the Noppe virtual environment, you are good to go!
 
