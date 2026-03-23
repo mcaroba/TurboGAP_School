@@ -1,0 +1,7 @@
+atoms_file = 'iter_md.xyz'
+pot_file = 'gap_files/CH.gap'
+n_species = 2
+species = C H
+masses = 12.01 1.01
+e0 = 0 0
+
