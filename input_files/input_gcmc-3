@@ -1,0 +1,38 @@
+atoms_file = 'atoms4.xyz'
+pot_file = 'gap_files/pdauh.gap'
+n_species = 3
+species = Pd Au H
+masses = 114.82 196.96 1.008
+e0 = -1.46623303 -0.17939474 -1.11172070
+!
+md_nsteps = 50
+md_step = 1
+!
+thermostat = bussi
+t_beg = 300
+t_end = 300
+tau_t = 100
+!
+mc_nsteps = 2000                 ! Number of MC steps / 2000 max
+n_mc_types = 5                   ! Number of mc move types
+mc_types = 'insertion' 'removal' 'move' 'swap' 'md' ! Mc move types
+mc_acceptance = 1   1   1  1  1  ! Relative rate of choosing the respective trial moves
+!
+n_mc_mu = 1                      ! gcmc: Number of chemical potential
+mc_mu = -3.3                     ! gcmc: Chemical potential
+mc_species = 'H'                 ! gcmc: species
+mc_min_dist = 0.1                ! gcmc: minimum distance between particles for insertion
+mc_max_dist = 5.0                ! gcmc: maximum distance between particles for insertion
+!
+mc_move_max = 0.20               ! Maximum distance for the move of a particular particle
+n_mc_swaps = 1                   !
+mc_swaps = 'Pd' 'Au'             !
+!
+randomize_velocities = .true.
+!
+mc_hybrid_opt = 'vv'
+mc_relax = .true.                ! Allows for relaxation after a given trial move
+n_mc_relax_after = 3             !
+mc_relax_after = 'insertion' 'removal' 'swap' !
+mc_nrelax = 50                   ! Number of relaxation steps for mc_relax
+mc_relax_opt = 'gd'              ! Type of relaxation for mc_relax

@@ -1,0 +1,18 @@
+atoms_file = 'atoms3.xyz'
+pot_file = 'gap_files/pdauh.gap'
+!
+n_species = 3
+species = Pd Au H
+masses = 114.82 196.96 1.008
+e0 = -1.46623303 -0.17939474 -1.11172070
+!
+md_nsteps = 500
+md_step = 2.
+!
+optimize = "vv"
+thermostat = "bussi"
+t_beg = 300
+t_end = 300
+tau_t = 100.
+!
+write_xyz = 10
