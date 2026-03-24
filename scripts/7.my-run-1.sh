@@ -1,10 +1,10 @@
-workdir="7.gcmc-exploration"
+workdir="7.my-run-1"
 
 rm -rf $workdir
 mkdir -p $workdir
 
 cp input_files/your_input ${workdir}/input
-cp structures/atoms4.xyz ${workdir}/
+cp structures/Cu55_AuPd_relax.xyz ${workdir}/atoms4.xyz
 
 cd $workdir
 
